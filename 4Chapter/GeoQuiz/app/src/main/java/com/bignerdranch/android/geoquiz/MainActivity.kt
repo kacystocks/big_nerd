@@ -27,8 +27,6 @@ class MainActivity : AppCompatActivity() {
         Question(R.string.question_asia, true))
 
     private var currentIndex = 0
-    private var lst = ArrayList<Int>()
-    private var total = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,10 +51,6 @@ class MainActivity : AppCompatActivity() {
             updateQuestion()
         }
         updateQuestion()
-        lst.clear()
-        for (i in questionBank) {
-            lst.add(0)
-        }
     }
 
     override fun onStart() {
@@ -98,53 +92,14 @@ class MainActivity : AppCompatActivity() {
     private fun checkAnswer(userAnswer: Boolean) {
         val correctAnswer = questionBank[currentIndex].answer
 
-        if (lst[currentIndex] == 0) {
-            var messageResId = 0
-            if (userAnswer == correctAnswer) {
-                messageResId = R.string.correct_toast
-                lst[currentIndex] = 1
-            } else {
-                messageResId = R.string.incorrect_toast
-                lst[currentIndex] = 2
-            }
-            val toast = Toast.makeText(this, messageResId, Toast.LENGTH_SHORT)
-            toast.setGravity(
-                Gravity.BOTTOM, 0, 0
-            )
-            toast.show()
+        val messageResId = if (userAnswer == correctAnswer) {
+            R.string.correct_toast
         } else {
-            val toast = Toast.makeText(this, R.string.already_answered, Toast.LENGTH_SHORT)
-            toast.setGravity(
-                Gravity.BOTTOM, 0, 0
-            )
-            toast.show()
+            R.string.incorrect_toast
         }
-
-        // if no 0's in lst, grade quiz
-        var tempBool = true
-        for (k in lst) {
-            if (k == 0){
-                tempBool = false
-            }
-        }
-
-        if (tempBool) {
-            // grade quiz
-            total = 0
-            for (j in lst){
-                if (j == 1) {
-                    total += 1
-                }
-            }
-            val score = (total.toFloat() / lst.size.toFloat()) * 100
-            val sScore = score.toInt().toString()
-
-            // show grade
-            val toast = Toast.makeText(this, "Your score is $sScore%", Toast.LENGTH_SHORT)
-            toast.setGravity(
-                Gravity.TOP, 0, 0
-            )
-            toast.show()
-        }
+        val toast = Toast.makeText(this, messageResId, Toast.LENGTH_SHORT)
+        toast.setGravity(
+            Gravity.BOTTOM, 0, 0)
+        toast.show()
     }
 }
